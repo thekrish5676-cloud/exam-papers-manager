@@ -54,7 +54,7 @@
                     <?php
                     global $wpdb;
                     $table_name = $wpdb->prefix . 'exam_papers';
-                    $papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY upload_date DESC");
+                    $papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY priority_order DESC, upload_date DESC");
                     
                     if ($papers) {
                         foreach ($papers as $paper) {

@@ -178,7 +178,7 @@
                 global $wpdb;
                 $table_name = $wpdb->prefix . 'exam_papers';
                 $total_papers = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-                $papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY upload_date DESC");
+                $papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY priority_order DESC, upload_date DESC");
 
                 if ($papers) {
                     foreach ($papers as $paper) {

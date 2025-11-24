@@ -57,6 +57,28 @@
                     </select>
                 </div>
 
+                <!-- NEW FIELD: Choose Paper to Prioritise -->
+                <div class="epm-form-group">
+                    <label for="prioritise_paper" class="epm-label">Choose Paper to Prioritise (Optional)</label>
+                    <select id="prioritise_paper" name="prioritise_paper" class="epm-select">
+                        <option value="">-- No Prioritisation --</option>
+                        <?php
+                        global $wpdb;
+                        $table_name = $wpdb->prefix . 'exam_papers';
+                        $existing_papers = $wpdb->get_results("SELECT id, title FROM $table_name ORDER BY upload_date DESC");
+                        
+                        if ($existing_papers) {
+                            foreach ($existing_papers as $existing_paper) {
+                                echo '<option value="' . esc_attr($existing_paper->id) . '">' . esc_html($existing_paper->title) . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                    <small style="color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem; display: block;">
+                        Select an existing paper to place it at the top of the list. The newly uploaded paper will appear second.
+                    </small>
+                </div>
+
                 <div class="epm-form-group epm-file-upload-group">
                     <label for="exam_file" class="epm-label">Upload Document</label>
                     <div class="epm-file-upload-wrapper">
@@ -100,7 +122,7 @@
             <?php
             global $wpdb;
             $table_name = $wpdb->prefix . 'exam_papers';
-            $recent_papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY upload_date DESC LIMIT 5");
+            $recent_papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY priority_order DESC, upload_date DESC LIMIT 5");
 
             if ($recent_papers) {
                 foreach ($recent_papers as $paper) {

@@ -61,7 +61,7 @@
             </div>
             <div class="epm-card-content">
                 <?php
-                $recent_papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY upload_date DESC LIMIT 5");
+                $recent_papers = $wpdb->get_results("SELECT * FROM $table_name ORDER BY priority_order DESC, upload_date DESC LIMIT 5");
                 if ($recent_papers) {
                     foreach ($recent_papers as $paper) {
                         echo '<div class="epm-recent-item">';

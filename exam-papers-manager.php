@@ -64,27 +64,36 @@ class ExamPapersManager {
     }
     
     public function create_database_tables() {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'exam_papers';
-        
-        $charset_collate = $wpdb->get_charset_collate();
-        
-        $sql = "CREATE TABLE $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            title varchar(255) NOT NULL,
-            qualification varchar(100) NOT NULL,
-            year_of_paper varchar(10) NOT NULL,
-            resource_type varchar(100) NOT NULL,
-            file_url varchar(500) NOT NULL,
-            file_type varchar(10) NOT NULL,
-            upload_date datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
-        ) $charset_collate;";
-        
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
+    global $wpdb;
+    
+    $table_name = $wpdb->prefix . 'exam_papers';
+    
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        title varchar(255) NOT NULL,
+        qualification varchar(100) NOT NULL,
+        year_of_paper varchar(10) NOT NULL,
+        resource_type varchar(100) NOT NULL,
+        file_url varchar(500) NOT NULL,
+        file_type varchar(10) NOT NULL,
+        upload_date datetime DEFAULT CURRENT_TIMESTAMP,
+        priority_order int(11) DEFAULT 0,
+        PRIMARY KEY (id),
+        KEY priority_order (priority_order)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+    
+    // Add priority_order column if it doesn't exist (for existing installations)
+    $row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'priority_order'");
+    
+    if(empty($row)){
+        $wpdb->query("ALTER TABLE $table_name ADD priority_order int(11) DEFAULT 0");
     }
+}
     
     public function create_exam_papers_post_type() {
         $labels = array(
@@ -176,134 +185,162 @@ class ExamPapersManager {
     }
     
     public function handle_exam_paper_upload() {
-        if (!wp_verify_nonce($_POST['nonce'], 'epm_admin_nonce')) {
-            wp_die('Security check failed');
-        }
-        
-        if (!current_user_can('manage_options')) {
-            wp_die('Insufficient permissions');
-        }
-        
-        $title = sanitize_text_field($_POST['title']);
-        $qualification = sanitize_text_field($_POST['qualification']);
-        $year_of_paper = sanitize_text_field($_POST['year_of_paper']);
-        $resource_type = sanitize_text_field($_POST['resource_type']);
-        
-        // Handle file upload
-        if (!empty($_FILES['exam_file']['name'])) {
-            $uploaded_file = wp_handle_upload($_FILES['exam_file'], array('test_form' => false));
-            
-            if ($uploaded_file && !isset($uploaded_file['error'])) {
-                global $wpdb;
-                $table_name = $wpdb->prefix . 'exam_papers';
-                
-                $file_type = pathinfo($uploaded_file['file'], PATHINFO_EXTENSION);
-                
-                $result = $wpdb->insert(
-                    $table_name,
-                    array(
-                        'title' => $title,
-                        'qualification' => $qualification,
-                        'year_of_paper' => $year_of_paper,
-                        'resource_type' => $resource_type,
-                        'file_url' => $uploaded_file['url'],
-                        'file_type' => $file_type,
-                    ),
-                    array('%s', '%s', '%s', '%s', '%s', '%s')
-                );
-                
-                if ($result) {
-                    wp_send_json_success('Exam paper uploaded successfully!');
-                } else {
-                    wp_send_json_error('Failed to save exam paper data');
-                }
-            } else {
-                wp_send_json_error('File upload failed: ' . $uploaded_file['error']);
-            }
-        } else {
-            wp_send_json_error('No file selected');
-        }
+    if (!wp_verify_nonce($_POST['nonce'], 'epm_admin_nonce')) {
+        wp_die('Security check failed');
     }
     
-    public function filter_exam_papers() {
-        if (!wp_verify_nonce($_POST['nonce'], 'epm_nonce')) {
-            wp_die('Security check failed');
-        }
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+    
+    $title = sanitize_text_field($_POST['title']);
+    $qualification = sanitize_text_field($_POST['qualification']);
+    $year_of_paper = sanitize_text_field($_POST['year_of_paper']);
+    $resource_type = sanitize_text_field($_POST['resource_type']);
+    $prioritise_paper_id = isset($_POST['prioritise_paper']) ? intval($_POST['prioritise_paper']) : 0;
+    
+    // Handle file upload
+    if (!empty($_FILES['exam_file']['name'])) {
+        $uploaded_file = wp_handle_upload($_FILES['exam_file'], array('test_form' => false));
         
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'exam_papers';
-        
-        // Get filter values
-        $qualification = sanitize_text_field($_POST['qualification']);
-        $year_of_paper = sanitize_text_field($_POST['year_of_paper']);
-        $resource_type = sanitize_text_field($_POST['resource_type']);
-        
-        // Debug logging
-        error_log('Filter values received:');
-        error_log('Qualification: ' . $qualification);
-        error_log('Year of paper: ' . $year_of_paper);
-        error_log('Resource type: ' . $resource_type);
-        
-        $where_conditions = array();
-        $where_values = array();
-        
-        // Handle multiple values (comma-separated)
-        if (!empty($qualification)) {
-            $qualifications = array_map('trim', explode(',', $qualification));
-            $qualification_placeholders = implode(',', array_fill(0, count($qualifications), '%s'));
-            $where_conditions[] = "qualification IN ($qualification_placeholders)";
-            $where_values = array_merge($where_values, $qualifications);
-        }
-        
-        if (!empty($year_of_paper)) {
-            $years = array_map('trim', explode(',', $year_of_paper));
-            $year_placeholders = implode(',', array_fill(0, count($years), '%s'));
-            $where_conditions[] = "year_of_paper IN ($year_placeholders)";
-            $where_values = array_merge($where_values, $years);
-        }
-        
-        if (!empty($resource_type)) {
-            $types = array_map('trim', explode(',', $resource_type));
-            $type_placeholders = implode(',', array_fill(0, count($types), '%s'));
-            $where_conditions[] = "resource_type IN ($type_placeholders)";
-            $where_values = array_merge($where_values, $types);
-        }
-        
-        $where_clause = "";
-        if (!empty($where_conditions)) {
-            $where_clause = "WHERE " . implode(" AND ", $where_conditions);
-        }
-        
-        $query = "SELECT * FROM $table_name $where_clause ORDER BY upload_date DESC";
-        
-        // Debug the final query
-        error_log('Final query: ' . $query);
-        error_log('Where values: ' . print_r($where_values, true));
-        
-        if (!empty($where_values)) {
-            $results = $wpdb->get_results($wpdb->prepare($query, $where_values));
-        } else {
-            $results = $wpdb->get_results($query);
-        }
-        
-        error_log('Results found: ' . count($results));
-        
-        ob_start();
-        if ($results) {
-            foreach ($results as $paper) {
-                include EPM_PLUGIN_PATH . 'templates/paper-item.php';
+        if ($uploaded_file && !isset($uploaded_file['error'])) {
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'exam_papers';
+            
+            $file_type = pathinfo($uploaded_file['file'], PATHINFO_EXTENSION);
+            
+            // Calculate priority order
+            $priority_order = 0;
+            
+            if ($prioritise_paper_id > 0) {
+                // Get the maximum priority order
+                $max_priority = $wpdb->get_var("SELECT MAX(priority_order) FROM $table_name");
+                $max_priority = $max_priority ? intval($max_priority) : 0;
+                
+                // Set prioritised paper to highest priority
+                $wpdb->update(
+                    $table_name,
+                    array('priority_order' => $max_priority + 2),
+                    array('id' => $prioritise_paper_id),
+                    array('%d'),
+                    array('%d')
+                );
+                
+                // New paper gets second highest priority
+                $priority_order = $max_priority + 1;
+            } else {
+                // Normal upload: get highest priority and add 1
+                $max_priority = $wpdb->get_var("SELECT MAX(priority_order) FROM $table_name");
+                $priority_order = $max_priority ? intval($max_priority) + 1 : 1;
+            }
+            
+            $result = $wpdb->insert(
+                $table_name,
+                array(
+                    'title' => $title,
+                    'qualification' => $qualification,
+                    'year_of_paper' => $year_of_paper,
+                    'resource_type' => $resource_type,
+                    'file_url' => $uploaded_file['url'],
+                    'file_type' => $file_type,
+                    'priority_order' => $priority_order,
+                ),
+                array('%s', '%s', '%s', '%s', '%s', '%s', '%d')
+            );
+            
+            if ($result) {
+                wp_send_json_success('Exam paper uploaded successfully!');
+            } else {
+                wp_send_json_error('Failed to save exam paper data');
             }
         } else {
-            echo '<div class="epm-no-results">';
-            echo '<div class="epm-no-results-icon">📄</div>';
-            echo '<h3>No exam papers found</h3>';
-            echo '<p>Try adjusting your filters or check back later for new content.</p>';
-            echo '</div>';
+            wp_send_json_error('File upload failed: ' . $uploaded_file['error']);
         }
-        $html = ob_get_clean();
-        
-        wp_send_json_success($html);
+    } else {
+        wp_send_json_error('No file selected');
     }
+}
+    
+    public function filter_exam_papers() {
+    if (!wp_verify_nonce($_POST['nonce'], 'epm_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'exam_papers';
+    
+    // Get filter values
+    $qualification = sanitize_text_field($_POST['qualification']);
+    $year_of_paper = sanitize_text_field($_POST['year_of_paper']);
+    $resource_type = sanitize_text_field($_POST['resource_type']);
+    
+    // Debug logging
+    error_log('Filter values received:');
+    error_log('Qualification: ' . $qualification);
+    error_log('Year of paper: ' . $year_of_paper);
+    error_log('Resource type: ' . $resource_type);
+    
+    $where_conditions = array();
+    $where_values = array();
+    
+    // Handle multiple values (comma-separated)
+    if (!empty($qualification)) {
+        $qualifications = array_map('trim', explode(',', $qualification));
+        $qualification_placeholders = implode(',', array_fill(0, count($qualifications), '%s'));
+        $where_conditions[] = "qualification IN ($qualification_placeholders)";
+        $where_values = array_merge($where_values, $qualifications);
+    }
+    
+    if (!empty($year_of_paper)) {
+        $years = array_map('trim', explode(',', $year_of_paper));
+        $year_placeholders = implode(',', array_fill(0, count($years), '%s'));
+        $where_conditions[] = "year_of_paper IN ($year_placeholders)";
+        $where_values = array_merge($where_values, $years);
+    }
+    
+    if (!empty($resource_type)) {
+        $types = array_map('trim', explode(',', $resource_type));
+        $type_placeholders = implode(',', array_fill(0, count($types), '%s'));
+        $where_conditions[] = "resource_type IN ($type_placeholders)";
+        $where_values = array_merge($where_values, $types);
+    }
+    
+    $where_clause = "";
+    if (!empty($where_conditions)) {
+        $where_clause = "WHERE " . implode(" AND ", $where_conditions);
+    }
+    
+    // Updated ORDER BY to use priority_order first, then upload_date
+    $query = "SELECT * FROM $table_name $where_clause ORDER BY priority_order DESC, upload_date DESC";
+    
+    // Debug the final query
+    error_log('Final query: ' . $query);
+    error_log('Where values: ' . print_r($where_values, true));
+    
+    if (!empty($where_values)) {
+        $results = $wpdb->get_results($wpdb->prepare($query, $where_values));
+    } else {
+        $results = $wpdb->get_results($query);
+    }
+    
+    error_log('Results found: ' . count($results));
+    
+    ob_start();
+    if ($results) {
+        foreach ($results as $paper) {
+            include EPM_PLUGIN_PATH . 'templates/paper-item.php';
+        }
+    } else {
+        echo '<div class="epm-no-results">';
+        echo '<div class="epm-no-results-icon">📄</div>';
+        echo '<h3>No exam papers found</h3>';
+        echo '<p>Try adjusting your filters or check back later for new content.</p>';
+        echo '</div>';
+    }
+    $html = ob_get_clean();
+    
+    wp_send_json_success($html);
+}
     
     public function display_exam_papers_shortcode($atts) {
         ob_start();
@@ -485,7 +522,7 @@ class ExamPapersManager {
             $where_clause = "WHERE " . implode(" AND ", $where_conditions);
         }
         
-        $query = "SELECT * FROM $table_name $where_clause ORDER BY upload_date DESC";
+        $query = "SELECT * FROM $table_name $where_clause ORDER BY priority_order DESC, upload_date DESC";
         
         if (!empty($where_values)) {
             $papers = $wpdb->get_results($wpdb->prepare($query, $where_values));
