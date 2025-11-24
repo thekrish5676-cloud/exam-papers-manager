@@ -1,0 +1,820 @@
+/* Frontend Styles for Exam Papers Manager */
+
+:root {
+  --epm-primary: #1170b5;
+  --epm-primary-light: #a855f7;
+  --epm-primary-dark: #020111;
+  --epm-secondary: #e5e7eb;
+  --epm-accent: #3b82f6;
+  --epm-text: #1f2937;
+  --epm-text-light: #6b7280;
+  --epm-text-muted: #9ca3af;
+  --epm-bg: #f9fafb;
+  --epm-card-bg: #ffffff;
+  --epm-border: #e5e7eb;
+  --epm-border-light: #f3f4f6;
+  --epm-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --epm-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --epm-radius: 28px;
+  --epm-radius-lg: 12px;
+}
+
+/* Container */
+.epm-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Page Header */
+.epm-page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.epm-page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--epm-text);
+  margin: 0 0 1rem 0;
+  background: linear-gradient(135deg, var(--epm-primary), var(--epm-primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.epm-page-subtitle {
+  font-size: 1.125rem;
+  color: var(--epm-text-light);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Content Wrapper */
+.epm-content-wrapper {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Sidebar */
+.epm-sidebar {
+  background: var(--epm-card-bg);
+  border-radius: var(--epm-radius-lg);
+  box-shadow: var(--epm-shadow);
+  padding: 1.5rem;
+  position: sticky;
+  top: 2rem;
+  border: 1px solid var(--epm-border);
+}
+
+/* Filter Sections */
+.epm-filter-section {
+  margin-bottom: 0.35rem;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.epm-filter-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Redesigned filter titles with purple text, gray background, and plus icons */
+.epm-filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #5b3a8f;
+  margin: 0;
+  cursor: pointer;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  border-radius: 0;
+  background: #f3f3f3;
+  transition: background-color 0.2s ease, border-left 0.2s ease;
+  border-left: 4px solid transparent;
+  position: relative;
+}
+
+.epm-filter-title:hover {
+  background: #efefef;
+}
+
+.epm-filter-title.active {
+  color: #5b3a8f;
+  background: #efefef;
+  border-left-color: #1170b5;
+}
+
+.epm-filter-icon {
+  display: none;
+}
+
+/* Plus icon styling - always visible as "+" */
+.epm-toggle {
+  font-size: 1.5rem;
+  color: #5b3a8f;
+  transition: transform 0.2s ease;
+  font-weight: 300;
+}
+
+.epm-filter-title.active .epm-toggle {
+  transform: none;
+}
+
+.epm-filter-content {
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+.epm-filter-content.active {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.epm-filter-subtitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--epm-text-light);
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.epm-filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Custom Checkboxes */
+.epm-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0rem 0rem 0rem 0.5rem !important;
+  border-radius: var(--epm-radius);
+  transition: background-color 0.2s ease;
+  font-size: 1.05rem;
+  color: var(--epm-text);
+}
+
+.epm-checkbox-label:hover {
+  background: var(--epm-bg);
+}
+
+.epm-checkbox-label.checked {
+  background: rgba(124, 58, 237, 0.1);
+  color: var(--epm-primary);
+}
+
+.epm-checkbox {
+  display: none;
+}
+
+.epm-checkmark {
+  width: 23px;
+  height: 23px;
+  border: 2px solid var(--epm-border);
+  border-radius: 4px;
+  margin-right: 0.75rem;
+  position: relative;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.epm-checkbox:checked + .epm-checkmark {
+  background: var(--epm-primary);
+  border-color: var(--epm-primary);
+}
+
+.epm-checkbox:checked + .epm-checkmark::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Filter Actions */
+.epm-filter-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.epm-filter-actions1 {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.epm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--epm-radius);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.epm-btn-primary {
+  background: var(--epm-primary);
+  color: white;
+}
+
+.epm-btn-primary:hover {
+  background: #044d82;
+  transform: translateY(-1px);
+  box-shadow: var(--epm-shadow-lg);
+}
+
+.epm-btn-secondary {
+  background: var(--epm-secondary);
+  color: var(--epm-text);
+  border: 1px solid var(--epm-border);
+}
+
+.epm-btn-secondary:hover {
+  background: #d1d5db;
+}
+
+/* Main Content */
+.epm-main-content {
+  min-width: 0;
+}
+
+/* Results Header */
+.epm-results-header {
+  background: var(--epm-card-bg);
+  border-radius: var(--epm-radius-lg) var(--epm-radius-lg) 0 0;
+  padding: 1.5rem;
+  border: 1px solid var(--epm-border);
+  border-bottom: none;
+}
+
+.epm-results-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.epm-results-count {
+  font-size: 0.875rem;
+  color: var(--epm-text-light);
+}
+
+/* Add gray styling for resource type counts */
+.epm-resource-count {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.epm-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.epm-pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--epm-text-light);
+}
+
+/* Top Pagination */
+.epm-pagination-top {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.epm-pagination-top .epm-pagination-btn {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--epm-border);
+  background: white;
+  color: var(--epm-text);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.epm-pagination-top .epm-pagination-btn:hover:not(:disabled) {
+  background: var(--epm-primary);
+  color: white;
+  border-color: var(--epm-primary);
+}
+
+.epm-pagination-top .epm-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.epm-pagination-top .epm-pagination-btn.active {
+  background: var(--epm-primary);
+  color: white;
+  border-color: var(--epm-primary);
+}
+
+.epm-items-per-page {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--epm-border);
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+/* Results Container */
+.epm-results-container {
+  background: var(--epm-card-bg);
+  border: 1px solid var(--epm-border);
+  border-top: none;
+  border-bottom: none;
+  min-height: 400px;
+}
+
+/* Paper Results */
+.epm-paper-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--epm-border-light);
+  transition: background-color 0.2s ease;
+}
+
+.epm-paper-result:hover {
+  background: var(--epm-bg);
+}
+
+.epm-paper-result:last-child {
+  border-bottom: none;
+}
+
+/* New header layout with icon and info side-by-side */
+.epm-paper-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.epm-paper-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--epm-bg);
+  border-radius: var(--epm-radius-lg);
+  flex-shrink: 0;
+}
+
+/* Simple red PDF badge - clean square with white text */
+.epm-pdf-badge-simple {
+  background: #dc2626;
+  color: white;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.epm-file-type-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--epm-primary);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  display: none;
+}
+
+/* New info section with single-line title and ellipsis */
+.epm-paper-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.epm-paper-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--epm-text);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  /* Single line with ellipsis if title is too long */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.epm-paper-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.epm-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--epm-text-light);
+}
+
+.epm-meta-icon {
+  font-size: 0.75rem;
+}
+
+.epm-meta-separator {
+  color: var(--epm-text-muted);
+  font-weight: 300;
+}
+
+/* Larger, styled year display */
+.epm-paper-year {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--epm-primary);
+}
+
+/* Paper Actions */
+.epm-paper-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Larger, rounded blue buttons with better styling */
+.epm-btn-view {
+  background: var(--epm-accent);
+  color: white;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  border-radius: 24px;
+}
+
+.epm-btn-view:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.epm-btn-download {
+  background: var(--epm-primary);
+  color: white;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  border-radius: 24px;
+}
+
+.epm-btn-download:hover {
+  background: #044d82;
+  transform: translateY(-1px);
+}
+
+.epm-btn-icon {
+  margin-right: 0.25rem;
+}
+
+/* Replace button styling with simple blue text links */
+.epm-link-view,
+.epm-link-download {
+  color: #3b82f6;
+  text-decoration: underline;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline;
+}
+
+.epm-link-view:hover,
+.epm-link-download:hover {
+  color: #1d4ed8;
+}
+
+/* Hide old button styles */
+.epm-btn-view,
+.epm-btn-download {
+  display: none;
+}
+
+/* No Results */
+.epm-no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--epm-text-light);
+}
+
+.epm-no-results-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.epm-no-results h3 {
+  font-size: 1.25rem;
+  color: var(--epm-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.epm-no-results p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* ============================================
+   ENHANCED SEARCH BAR STYLES - NEW SECTION
+   ============================================ */
+
+/* Search within results input styling */
+.epm-search-results {
+  width: 100%;
+  padding: 0.75rem 3.5rem 0.75rem 1.25rem;
+  font-size: 0.9375rem;
+  border: 1px solid #8951d8;
+  border-radius: var(--epm-radius);
+  background: #f9fafb;
+  color: var(--epm-text);
+  transition: all 0.3s ease;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.epm-search-results::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.epm-search-results:focus {
+  outline: none;
+  border-color: var(--epm-primary);
+  box-shadow: 0 0 0 3px rgba(17, 112, 181, 0.1);
+  background: white;
+}
+
+/* Wrapper for search with icon - positioned in results header */
+.epm-search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  margin-bottom: 0;
+}
+
+.epm-search-wrapper .epm-search-results {
+  padding-right: 3rem;
+  margin-bottom: 0;
+}
+
+.epm-search-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 1.125rem;
+  pointer-events: none;
+}
+
+/* Make search icon darker on focus */
+.epm-search-wrapper:focus-within .epm-search-icon {
+  color: var(--epm-primary);
+}
+
+/* Loading state for search */
+.epm-search-wrapper.loading .epm-search-icon::before {
+  content: "⏳";
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Position search in results header */
+.epm-results-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.epm-results-info .epm-search-wrapper {
+  order: 2;
+  flex: 1;
+  max-width: 450px;
+}
+
+/* ============================================
+   END ENHANCED SEARCH BAR STYLES
+   ============================================ */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .epm-container {
+    padding: 1rem;
+  }
+
+  .epm-page-title {
+    font-size: 2rem;
+  }
+
+  .epm-content-wrapper {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .epm-sidebar {
+    position: static;
+    order: 2;
+  }
+
+  .epm-paper-result {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .epm-paper-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .epm-results-header {
+    padding: 1rem;
+  }
+
+  .epm-results-info {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .epm-header-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .epm-pagination-top {
+    justify-content: center;
+  }
+
+  .epm-filter-actions {
+    flex-direction: row;
+  }
+
+  .epm-search-results {
+    font-size: 0.9375rem;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .epm-search-wrapper .epm-search-results {
+    padding-right: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .epm-page-title {
+    font-size: 1.75rem;
+  }
+
+  .epm-paper-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .epm-meta-separator {
+    display: none;
+  }
+
+  .epm-paper-actions {
+    flex-direction: column;
+  }
+
+  .epm-btn {
+    width: 100%;
+  }
+}
+
+/* Loading States */
+.epm-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  color: var(--epm-text-light);
+}
+
+.epm-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--epm-border);
+  border-top: 2px solid var(--epm-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.75rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Focus States */
+.epm-btn:focus,
+.epm-checkbox:focus + .epm-checkmark,
+.epm-items-per-page:focus {
+  outline: 2px solid var(--epm-primary);
+  outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+  .epm-sidebar,
+  .epm-pagination,
+  .epm-filter-actions,
+  .epm-paper-actions {
+    display: none;
+  }
+
+  .epm-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .epm-paper-result {
+    break-inside: avoid;
+    border: 1px solid var(--epm-border);
+    margin-bottom: 1rem;
+    border-radius: var(--epm-radius);
+  }
+}
