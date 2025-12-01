@@ -7,12 +7,12 @@
             </div>
 
             <div class="epm-filter-section">
-                <h3 class="epm-filter-title">
+                <h3 class="epm-filter-title active">
                     <span class="epm-filter-icon">📚</span>
                     Qualification
-                    <span class="epm-toggle">+</span>
+                    <span class="epm-toggle">−</span>
                 </h3>
-                <div class="epm-filter-content">
+                <div class="epm-filter-content active">
                     <div class="epm-filter-options">
                         <label class="epm-checkbox-label">
                             <input type="checkbox" name="qualification" value="AS Psychology" class="epm-checkbox">
@@ -34,7 +34,6 @@
                     Year of past paper
                     <span class="epm-toggle">+</span>
                 </h3>
-                <!-- Removed 'active' class to make section collapsed by default -->
                 <div class="epm-filter-content">
                     <div class="epm-filter-options">
                         <label class="epm-checkbox-label">
@@ -107,13 +106,12 @@
                     Resource type
                     <span class="epm-toggle">+</span>
                 </h3>
-                <!-- Removed 'active' class to make section collapsed by default -->
                 <div class="epm-filter-content">
                     <div class="epm-filter-options">
                         <?php
                         global $wpdb;
                         $table_name = $wpdb->prefix . 'exam_papers';
-                        
+
                         // Define resource types
                         $resource_types = array(
                             'Question paper',
@@ -122,7 +120,7 @@
                             'Sample material',
                             'Question papers'
                         );
-                        
+
                         // Get count for each resource type
                         foreach ($resource_types as $type) {
                             $count = $wpdb->get_var($wpdb->prepare(
@@ -130,11 +128,11 @@
                                 $type
                             ));
                         ?>
-                        <label class="epm-checkbox-label">
-                            <input type="checkbox" name="resource_type" value="<?php echo esc_attr($type); ?>" class="epm-checkbox">
-                            <span class="epm-checkmark"></span>
-                            <?php echo esc_html($type); ?> <span class="epm-resource-count">(<?php echo intval($count); ?>)</span>
-                        </label>
+                            <label class="epm-checkbox-label">
+                                <input type="checkbox" name="resource_type" value="<?php echo esc_attr($type); ?>" class="epm-checkbox">
+                                <span class="epm-checkmark"></span>
+                                <?php echo esc_html($type); ?> <span class="epm-resource-count">(<?php echo intval($count); ?>)</span>
+                            </label>
                         <?php } ?>
                     </div>
                 </div>
