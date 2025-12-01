@@ -29,12 +29,13 @@
             </div>
 
             <div class="epm-filter-section">
-                <h3 class="epm-filter-title active">
+                <h3 class="epm-filter-title">
                     <span class="epm-filter-icon">📅</span>
                     Year of past paper
-                    <span class="epm-toggle">−</span>
+                    <span class="epm-toggle">+</span>
                 </h3>
-                <div class="epm-filter-content active">
+                <!-- Removed 'active' class to make section collapsed by default -->
+                <div class="epm-filter-content">
                     <div class="epm-filter-options">
                         <label class="epm-checkbox-label">
                             <input type="checkbox" name="year_of_paper" value="2025" class="epm-checkbox">
@@ -101,12 +102,13 @@
             </div>
 
             <div class="epm-filter-section">
-                <h3 class="epm-filter-title active">
+                <h3 class="epm-filter-title">
                     <span class="epm-filter-icon">🎯</span>
                     Resource type
-                    <span class="epm-toggle">−</span>
+                    <span class="epm-toggle">+</span>
                 </h3>
-                <div class="epm-filter-content active">
+                <!-- Removed 'active' class to make section collapsed by default -->
+                <div class="epm-filter-content">
                     <div class="epm-filter-options">
                         <?php
                         global $wpdb;
