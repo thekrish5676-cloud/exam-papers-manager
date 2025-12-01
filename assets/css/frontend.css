@@ -84,13 +84,14 @@
   padding-bottom: 0;
 }
 
-/* Redesigned filter titles with purple text, gray background, and plus icons */
+/* Redesigned filter titles with Roboto font (bold) */
 .epm-filter-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #5b3a8f;
   margin: 0;
   cursor: pointer;
@@ -440,15 +441,16 @@
   display: none;
 }
 
-/* New info section with single-line title and ellipsis */
+/* New info section with Roboto font (bold) for title */
 .epm-paper-info {
   flex: 1;
   min-width: 0;
 }
 
 .epm-paper-title {
+  font-family: 'Roboto', sans-serif;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--epm-text);
   margin: 0 0 0.5rem 0;
   line-height: 1.4;
